@@ -34,7 +34,7 @@ RUN pip3 install --no-cache-dir \
     ipython \
     jupyter \
     cython \
-    cupy-cuda91==4.0.0 \
+    cupy-cuda90==4.0.0 \
     chainer==4.0.0
 
 WORKDIR /root
