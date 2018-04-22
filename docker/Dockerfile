@@ -5,40 +5,52 @@ RUN apt-get update -y && \
     curl \
     git \
     build-essential \
+    gfortran \
     nasm \
     tmux \
     sudo \
     openssh-client \
-    rsync \
     libgoogle-glog-dev \
+    rsync \
     curl \
+    wget \
     cmake \
     automake \
     libgmp3-dev \
+    cpio \
     libtool \
     libyaml-dev \
     realpath \
-    wget \
     valgrind \
     software-properties-common \
     unzip \
     libz-dev \
+    vim \
+    emacs \
     python3-dev \
     python3-pip \
     python3-wheel \
     python3-setuptools && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-RUN pip3 install --no-cache-dir \
-    numpy \
-    ipython \
-    jupyter \
-    cython \
-    cupy-cuda90==4.0.0 \
-    chainer==4.0.0
-
 WORKDIR /root
 
+# Install Intel MKL
+RUN mkdir intel_mkl && cd intel_mkl && \
+    wget http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/12725/l_mkl_2018.2.199.tgz && \
+    tar zxvf l_mkl_2018.2.199.tgz && rm -rf l_mkl_2018.2.199.tgz && \
+    cd l_mkl_2018.2.199 && \
+    sed -i -E "s/ACCEPT_EULA=decline/ACCEPT_EULA=accept/g" silent.cfg && \
+    ./install.sh -s silent.cfg && \
+    rm -rf ${HOME}/intel_mkl
+ENV LD_LIBRARY_PATH /opt/intel/mkl/lib/intel64:/opt/intel/lib/intel64:$LD_LIBRARY_PATH
+
+# Install numpy & scipy with mkl backend
+RUN echo "[mkl]\nlibrary_dirs = /opt/intel/mkl/lib/intel64\ninclude_dirs = /opt/intel/mkl/include\nmkl_libs = mkl_rt\nlapack_libs =" >> $HOME/.numpy-site.cfg && \
+    pip3 install --no-binary :all: numpy==1.14.2 && \
+    pip3 install --no-binary :all: scipy==1.0.1
+
+# Install libjpeg-turbo
 RUN mkdir libjpeg-turbo && cd libjpeg-turbo && \
     wget https://jaist.dl.sourceforge.net/project/libjpeg-turbo/1.5.1/libjpeg-turbo-1.5.1.tar.gz && \
     tar zxvf libjpeg-turbo-1.5.1.tar.gz && \
@@ -49,6 +61,7 @@ RUN mkdir libjpeg-turbo && cd libjpeg-turbo && \
     make install && \
     rm -rf ${HOME}/libjpeg-turbo
 
+# Install OpenCV with libjpeg-turbo
 RUN mkdir opencv && cd opencv && \
     wget https://github.com/opencv/opencv/archive/3.4.1.tar.gz && \
     tar zxvf 3.4.1.tar.gz && rm -rf 3.4.1.tar.gz && \
@@ -78,5 +91,16 @@ RUN mkdir opencv && cd opencv && \
     -DPYTHON3_LIBRARIES=$(find /usr/lib -name 'libpython*.so') \
     ${HOME}/opencv/opencv-3.4.1 && \
     make -j$(nproc) && \
-    make install
+    make install && \
+    rm -rf ${HOME}/opencv
+
+RUN pip3 install --no-cache-dir \
+    ipython==6.3.1 \
+    jupyter==1.0.0 \
+    cython==0.28.2 \
+    cupy-cuda90==4.0.0 \
+    chainer==4.0.0 \
+    matplotlib==2.2.2 \
+    scikit-learn==0.19.1 \
+    pandas==0.22.0
 
