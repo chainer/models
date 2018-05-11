@@ -72,8 +72,8 @@ For each model the _Budget_ is defined as the number of epochs required to train
 | DNN (Budget)              |  SGD         | SWA 1 Budget | SWA 1.25 Budgets | SWA 1.5 Budgets |
 | ------------------------- |:------------:|:------------:|:----------------:|:---------------:|
 | VGG16 (200)               | 72.22 | 73.65 | 73.88     | 74.09    |
-| PreResNet110 (150)        | 78.26 | - | -     | -    |
-| WideResNet28x10 (200)     | 81.61 | 82.14 |  82.28   | -    |
+| PreResNet110 (150)        | 78.26 | 79.38 | 80.01     | 79.99    |
+| WideResNet28x10 (200)     | 81.61 | 82.14 |  82.28   | 82.32    |
 
 
 
