@@ -5,9 +5,9 @@ Original paper: [SNAPSHOT ENSEMBLES: TRAIN 1, GET M FOR FREE](https://arxiv.org/
 
 # Introduction
 
-Snapshot Ensemble is a method to train multiple models which can be ensembled. It improves generalization by the ensemble. And importantly it achieves that at no additional training cost. Snapshot Ensemble train a single model, and along its optimization, it saves the model parameters at certain epoch. Therefore the weights being "snapshots" of the model.
+Snapshot Ensemble is a method to train multiple models which can be ensembled. It improves generalization by the ensemble, and importantly it achieves that at no additional training cost. 
 
-The key idea of  Snapshot Ensemble is to find multiple "good" local optima along its optimization. To achieve that, the authors use cosine annealing cycles as the learning rate schedule. They found that there exist multiple local minima when training a model using the cosine annealing cycles. 
+Snapshot Ensemble train a single model, and along its optimization, it saves the model parameters at certain epoch. Therefore the weights being "snapshots" of the model. The key idea of  Snapshot Ensemble is to find multiple "good" local optima along its optimization. To achieve that, the authors use cosine annealing cycles as the learning rate schedule. They found that there exist multiple local minima when training a model using the cosine annealing cycles. 
 
 It can be  described using the following image from the paper:
 
@@ -46,22 +46,22 @@ Parameters:
 * ```EPOCH``` &mdash; number of training epochs (default: 200)
 * ```LR_INIT``` &mdash; initial learning rate (default: 0.1)
 * ```WD``` &mdash; weight decay (default: 1e-4)
-* ```SWA_START``` &mdash; split the training process into N cycles,each of which starts with a large learning rate (default: 5)
+* ```SE_CYCLE``` &mdash; split the training process into N cycles,each of which starts with a large learning rate (default: 5)
 
 
 To evaluate models trained by Snapshot Ensemble, use the following command:
 
 ```bash
 python3 eval.py --dataset=<DATASET> \
-                 --model=<MODEL> \
-                 --out=<OUT>
+                --model=<MODEL> \
+                --out=<OUT>
 ```
 
 Parameters:
 
 * ```DATASET``` &mdash; dataset name [CIFAR10/CIFAR100] (default: CIFAR100)
-* ```MODEL``` &mdash; DNN model name:
-* ```OUT``` &mdash; the directory from which read the snapshot files.
+* ```MODEL``` &mdash; DNN model name
+* ```OUT``` &mdash; the directory from which read the snapshot files
 
 ## Examples
 
