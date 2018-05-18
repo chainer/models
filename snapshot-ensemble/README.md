@@ -11,6 +11,9 @@ The key idea of  Snapshot Ensemble is to find multiple "good" local optima along
 
 It can be  described using the following image from the paper:
 
+![Snapshot Ensemble](https://raw.githubusercontent.com/koki0702/models/images/snapshot_ensemble.png)
+
+
 # Requirement
 
 - Python 3.5.1+
@@ -77,7 +80,7 @@ python eval.py --dataset=CIFAR100 --model=PreResNet110 --out=result_resnet
 Test accuracy (%) of CIFAR-100 for different training methods by our codes. 
 
 | Model              |  Single         | NoCycle Snapshot Ensemble | Snapshot Ensemble |
-| ------------------------- |:------------:|:------------:|:----------------:|:---------------:|
+|:------------:|:------------:|:----------------:|:---------------:|
 | PreResNet110        | 67.91 | 69.70 | 70.68  |
 
 
