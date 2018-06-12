@@ -3,6 +3,7 @@
 
 import argparse
 
+import chainer
 from chainer import optimizers
 import matplotlib.pyplot as plt
 import numpy as np
@@ -30,6 +31,11 @@ if __name__ == '__main__':
 
     # Instantiate a model
     model = mdn.MDN(args.input_dim, args.hidden_units, args.gaussian_mixtures)
+    if args.gpu >= 0:
+        chainer.backends.cuda.get_device_from_id(args.gpu).use()
+        model.to_gpu()
+        x_data = chainer.backends.cuda.to_gpu(x_data)
+        y_data = chainer.backends.cuda.to_gpu(y_data)
 
     # Prepare an optimizer
     optimizer = optimizers.Adam()
@@ -43,10 +49,10 @@ if __name__ == '__main__':
         model.cleargrads()
         loss.backward()
         optimizer.update()
-        iteration += 1
         loss_history.append(float(loss.array))
         if epoch % 100 == 0:
             print('epoch:', epoch, 'iteration:', iteration, 'loss:', float(loss.array))
+        iteration += 1
 
     # Plot results
     plt.clf()
@@ -56,13 +62,19 @@ if __name__ == '__main__':
     plt.savefig('images/loss.png')
 
     pred_x_data = np.random.uniform(-15, 15, size=(3000, 1)).astype(np.float32)
+    if args.gpu >= 0:
+        pred_x_data = chainer.backends.cuda.to_gpu(pred_x_data)
     pred_y_data = model.sample(pred_x_data).array
+    pred_x_data = chainer.backends.cuda.to_cpu(pred_x_data)
+    pred_y_data = chainer.backends.cuda.to_cpu(pred_y_data)
 
     plt.clf()
     plt.scatter(pred_x_data, pred_y_data, alpha=0.3)
     plt.savefig('images/generated.png')
 
     plt.clf()
+    x_data = chainer.backends.cuda.to_cpu(x_data)
+    y_data = chainer.backends.cuda.to_cpu(y_data)
     plt.scatter(x_data, y_data, c='r', alpha=0.3)
     plt.scatter(pred_x_data, pred_y_data, alpha=0.3)
     plt.savefig('images/overlap.png')

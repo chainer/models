@@ -3,13 +3,14 @@ import math
 import chainer
 import chainer.functions as F
 import chainer.links as L
+import numpy as np
 
 PROBC = 1 / math.sqrt(2 * math.pi)
 
 
 class MDN(chainer.Chain):
 
-    """Mixture Density Network"""
+    """Mixture Density Network."""
 
     def __init__(self, input_dim, hidden_units, gaussian_mixtures):
         super(MDN, self).__init__()
@@ -60,12 +61,12 @@ class MDN(chainer.Chain):
         return F.mean(negative_log_likelihood)
 
     def sample(self, x):
-        xp = self.xp
         pi, mu, log_var = self.get_gaussian_params(x)
         n_batch = pi.shape[0]
 
         # Choose one of Gaussian means and vars n_batch times
-        idx = [xp.random.choice(self.gaussian_mixtures, p=p) for p in pi.array]
+        ps = chainer.backends.cuda.to_cpu(pi.array)
+        idx = [np.random.choice(self.gaussian_mixtures, p=p) for p in ps]
         mu = F.get_item(mu, [range(n_batch), idx])
         log_var = F.get_item(log_var, [range(n_batch), idx])
 
