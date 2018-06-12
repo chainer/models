@@ -9,9 +9,7 @@ PROBC = 1 / math.sqrt(2 * math.pi)
 
 class MDN(chainer.Chain):
 
-    """Mixture Density Network.
-
-    """
+    """Mixture Density Network"""
 
     def __init__(self, input_dim, hidden_units, gaussian_mixtures):
         super(MDN, self).__init__()
@@ -23,12 +21,6 @@ class MDN(chainer.Chain):
         self.gaussian_mixtures = gaussian_mixtures
 
     def get_gaussian_params(self, x):
-        """Estimate a next latent state.
-
-        Args:
-            x (ndarray): The shape should be (N, input_dim).
-
-        """
         h = F.tanh(self.l1(x))
         h = self.l2(h)
 

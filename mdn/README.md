@@ -1,7 +1,7 @@
-# Mixture Density Network with Chainer
+# Mixture Density Networks with Chainer
 
-This is an example code of Mixture Density Network implemented with Chainer.
-All the parameters, network design, and hwo to prepare synthetic data are the same as this article: [Mixture Density Networks with TensorFlow](http://blog.otoro.net/2015/11/24/mixture-density-networks-with-tensorflow/).
+This is an example code of Mixture Density Networks implemented with Chainer.
+All the parameters, the network design, and how to prepare synthetic data are the same as this article: [Mixture Density Networks with TensorFlow](http://blog.otoro.net/2015/11/24/mixture-density-networks-with-tensorflow/).
 
 This repository is intended to be a draft for a repository in [chainer/models](https://github.com/chainer/models) which is to collect self-contained Chainer examples.
 
