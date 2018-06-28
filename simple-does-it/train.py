@@ -16,11 +16,11 @@ from chainercv.extensions import SemanticSegmentationEvaluator
 from chainercv.links import PixelwiseSoftmaxClassifier
 from chainercv.utils import write_image
 
-from wss.datasets.dataset_utils import get_sbd_augmented_voc
-from wss.datasets.dataset_utils import SimpleDoesItTransform
-from wss.datasets.voc_semantic_segmentation_with_bbox_dataset import \
+from dataset_utils import get_sbd_augmented_voc
+from dataset_utils import SimpleDoesItTransform
+from voc_semantic_segmentation_with_bbox_dataset import \
     VOCSemanticSegmentationWithBboxDataset
-from wss.model import get_pspnet_resnet50
+from model import get_pspnet_resnet50
 
 
 def predict_all(model, dataset):
