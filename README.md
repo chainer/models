@@ -6,6 +6,8 @@ This repository contains a number of models implemented in [Chainer](https://git
 If you have created a model, please send us a pull request. 
 For those just getting started with pull requests, GitHub has a [howto](https://help.github.com/articles/about-pull-requests/).
 
+We have a list of candidate papers to implement: https://github.com/chainer/models/projects/1
+
 # Models
 - Averaging Weights Leads to Wider Optima and Better Generalization  [[code](https://github.com/chainer/models/tree/master/swa)] [[paper](https://arxiv.org/abs/1803.05407)]
 - Snapshot Ensembles: Train 1, get M for free [[paper](https://arxiv.org/abs/1704.00109)] [[code](https://github.com/chainer/models/tree/master/snapshot-ensemble)]
