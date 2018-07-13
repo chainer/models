@@ -18,5 +18,6 @@ We have a list of candidate papers to implement: https://github.com/chainer/mode
 - Improving Language Understanding by Generative Pre-Training [[article](https://blog.openai.com/language-unsupervised/)] [[code](https://github.com/chainer/models/tree/master/finetuning-transformer-lm)]
 - Deep contextualized word representations [[paper](http://arxiv.org/abs/1802.05365)] [[code](https://github.com/chainer/models/tree/master/elmo-chainer)]
 - Adversarial Training Methods for Semi-Supervised Text Classification [[paper](https://arxiv.org/abs/1605.07725)] [[code](https://github.com/chainer/models/tree/master/adversarial_text)]
+- Multi-label image classification [[code](https://github.com/chainer/models/tree/master/multi-label-classification)]
 
 
