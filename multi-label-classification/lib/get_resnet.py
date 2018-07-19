@@ -1,5 +1,6 @@
 import numpy as np
 
+import chainer.links as L
 from chainercv.links import ResNet50
 
 
@@ -34,4 +35,12 @@ def get_resnet_50(n_class):
         name = dst_named_param[0]
         if name not in ignore_names:
             dst_named_param[1].array[:] = src_params[name].array[:]
+
+    # Copy Batch Normalization's statistics
+    dst_links = dict(dst.namedlinks())
+    for name, link in src.namedlinks():
+        if isinstance(link, L.BatchNormalization):
+            dst_bn = dst_links[name]
+            dst_bn.avg_mean[:] = link.avg_mean
+            dst_bn.avg_var[:] = link.avg_var
     return dst
