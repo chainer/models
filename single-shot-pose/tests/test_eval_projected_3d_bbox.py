@@ -4,7 +4,7 @@ import numpy as np
 
 import sys
 sys.path.append('../lib')
-from eval_projected_3d_bbox import eval_projected_3d_bbox
+from eval_projected_3d_bbox import eval_projected_3d_bbox_single
 from utils import get_linemod_intrinsics
 
 
@@ -15,9 +15,9 @@ class TestEvalProjected3dBbox(unittest.TestCase):
         # https://drive.google.com/open?id=1gjTKzGptvvCu5ElhaUv6alX91alIL4IJ
         data = np.load('linemod_ape.npz')
 
-        result = eval_projected_3d_bbox(
-            data['pred_points'], None, data['pred_scores'],
-            data['gt_points'], None, data['vertex'],
+        result = eval_projected_3d_bbox_single(
+            data['pred_points'], data['pred_scores'],
+            data['gt_points'], data['vertex'],
             get_linemod_intrinsics(), diam=data['diam'])
 
         ######################################################################
