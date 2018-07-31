@@ -37,6 +37,11 @@ Also, you can convert PyTorch weights to Chainer weights by yourself by followin
 $ python demo.py [--gpu <gpu>] [--pretrained-model <model_path>] <image>
 ```
 
+
+##### Weight conversion
+
+See [here](https://github.com/chainer/models/tree/master/single-shot-pose/conversion)
+
 ##### Train
 
 ```bash
@@ -66,13 +71,15 @@ Here are the scores. There are four scores in each block.
 From left to right, these four scores are from
 1. PyTorch code [1]
 2. Chainer converted weight
-3. Chainer trained weights starting from the weights pretrained on `conf_loss_scale=0`
-4. Chainer trained weights starting from the ImageNet pretrained weights
+3. (two phase training) Chainer trained weights starting from the weights pretrained with `conf_loss_scale=0`
+4. (one phase training) Chainer trained weights starting from the ImageNet pretrained weights
 
 | Object | 2D projection acc (%) | 3D transform acc (%) | Mean pixel error (px) |
 |:-:|:-:|:-:|:-:|
 | ape | 94.48 / 94.48 / **97.14** / 96.76  | **28.00** / **28.00** / 27.81 / 27.05  | 2.8339 / 2.8339 / **1.9337** / 1.9860   |
-| benchvise | 94.86 / 94.86 / **96.51** / | 78.68 / 78.68 / 78.68 / | 2.5054 / 2.5054 / **2.5031**/  |
+| benchvise | 94.86 / 94.86 / **96.51** / 83.14 | 78.68 / 78.68 / 78.68 / 54.75 | 2.5054 / 2.5054 / **2.5031**/ 3.7296  |
+
+The two phase training is more stable for some objects.
 
 
 ## References
