@@ -62,11 +62,6 @@ class TrainChain(chainer.Chain):
         imgs = self.xp.array(imgs)
         points = [self.xp.array(point) for point in points]
         labels = [self.xp.array(label) for label in labels]
-        # for i in range(len(imgs)):
-        #     from lib.vis_point import vis_point
-        #     import matplotlib.pyplot as plt
-        #     vis_point(imgs[i] * 255, points[i])
-        #     plt.show()
         model_outputs = self.model(imgs)
         point_loss, conf_loss = region_loss(model_outputs, points)
         loss = point_loss + self.conf_loss_scale * conf_loss
