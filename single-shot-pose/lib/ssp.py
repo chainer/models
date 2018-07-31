@@ -104,9 +104,7 @@ class SSPYOLOv2(chainer.Chain):
         # print('last', h[0, 0, 0, 0])
         return h
 
-    def predict(self, imgs):
-        img_W = 544
-        img_H = 544
+    def prepare(self, imgs, img_W=544, img_H=544):
         original_Ws = []
         original_Hs = []
         xs = []
@@ -114,11 +112,18 @@ class SSPYOLOv2(chainer.Chain):
             original_Ws.append(img.shape[2])
             original_Hs.append(img.shape[1])
             img = resize(img, (img_H, img_W))
-            x = img[None] / 255  # scale weights in the future
-            xs.append(x)
+            xs.append(img)
+        return xs, original_Ws, original_Hs
+
+    def predict(self, imgs):
+        img_W = 544
+        img_H = 544
+        xs, original_Ws, original_Hs = self.prepare(imgs, img_W, img_H)
+
+        assert len(xs) == 1
         with chainer.using_config('train', False), \
                 chainer.function.no_backprop_mode():
-            network_outputs = self.__call__(self.xp.array(x)).data
+            network_outputs = self.__call__(self.xp.array(xs)).data
             points, labels, scores = self._get_region_boxes(
                 network_outputs, img_W, img_H)
 
@@ -196,27 +201,6 @@ def rpoints_to_points(rpoints):
         0, H-1, H)[None].repeat(W, 0).T[None].repeat(B, 0)
     points_img = xp.stack(
         ((rpoints[:, :, 0] + grid_x[:, None]) / W,
-        (rpoints[:, :, 1] + grid_y[:, None]) / H),
+         (rpoints[:, :, 1] + grid_y[:, None]) / H),
         axis=2)
     return points_img
-
-
-if __name__ == '__main__':
-    # img = np.load('img.npy')[0] * 255
-    # _, H, W = img.shape
-
-    # output = np.load('input.npy')
-    import chainer
-    data = np.load('data/data.npy')
-    output = np.load('data/output.npy')
-    model = SSPYOLOv2()
-    chainer.serializers.load_npz('../ssp_yolo_v2.npz', model)
-    points, _, scores = model._get_region_boxes(output, 640, 480)
-    all_boxes = np.load('data/all_boxes.npy')
-    all_box = all_boxes[0][:, :18].reshape(-1, 9, 2)
-    all_box[:, :, 0] *= 640
-    all_box[:, :, 1] *= 480
-
-    chainer.config.train = False
-    my_output = model(data)
-    np.testing.assert_almost_equal(output, my_output.data, decimal=5)

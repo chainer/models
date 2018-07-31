@@ -1,6 +1,7 @@
 from __future__ import division
 import numpy as np
 
+import chainer
 import chainer.functions as F
 
 from .ssp import rpoints_to_points
@@ -40,9 +41,8 @@ def corner_confidences9(gt_corners, pr_corners,
 
 
 def create_target(pred_corners, gt_points, noobject_scale=0.1,
-                  object_scale=5, 
-                  sil_thresh=0.6):
-    xp = chainer.cuda.get_array_module(gt_points)
+                  object_scale=5, sil_thresh=0.6):
+    xp = chainer.cuda.get_array_module(pred_corners)
     B, _, _, H, W = pred_corners.shape
     B = len(gt_points)
 
@@ -57,7 +57,7 @@ def create_target(pred_corners, gt_points, noobject_scale=0.1,
         for gt_pt in gt_point:
             conf = xp.maximum(
                 conf, corner_confidences9(gt_pt, pred_corner))
-        conf_mask[b, conf > sil_thresh] = 0
+        conf_mask[b][conf > sil_thresh] = 0
 
     for b, (pred_corner, gt_point) in enumerate(
             zip(pred_corners, gt_points)):
@@ -77,15 +77,12 @@ def create_target(pred_corners, gt_points, noobject_scale=0.1,
 
 
 def region_loss(output, gt_points):
-    xp = chainer.cuda.get_array_module(output)
     # rpoints lie in [0, feat_size]
     # points lie in [0, 1]
     # anchors = [0.1067, 0.9223]
     B, C, H, W = output.shape
-    n_class = C - 19
 
     det_confs = F.sigmoid(output[:, 18])
-    cls_conf = F.softmax(output[:, 19:19 + n_class])
     rpoints = output[:, :18].reshape(B, 9, 2, H, W)
     rpoints0 = F.sigmoid(rpoints[:, 0])
     rpoints = F.concat(
@@ -96,45 +93,7 @@ def region_loss(output, gt_points):
     gt_rpoints, gt_confs, coord_mask, conf_mask = create_target(
         points_data, gt_points)
 
-    coord_loss = F.sum(
-        coord_mask[:, None, None] * (rpoints - gt_rpoints) ** 2) / 2
-    conf_loss = F.sum(conf_mask * (det_confs - gt_confs) ** 2) / 2
-    loss = coord_loss + conf_loss
-    return loss
-
-
-if __name__ == '__main__':
-    import chainer
-    output = np.load('loss_input.npy')
-    target = np.load('target_input.npy')
-
-
-    def truths_length(truths):
-        for i in range(50):
-            if truths[i][1] == 0:
-                return i
-    anno = target.reshape(-1, 50, 21)
-    points = []
-    for i in range(anno.shape[0]):
-        anno_i = anno[i][:truths_length(anno[i])]
-        # normalized
-        points.append(anno_i[:, 1:19].reshape(-1, 9, 2).astype(np.float32))
-
-    loss = region_loss(chainer.Variable(output), points)
-
-
-
-    # import pickle
-    # import torch
-    # with open('gt_corners.pkl', 'rb') as f:
-    #     gt_corners = pickle.load(f)
-    # with open('pr_corners.pkl', 'rb') as f:
-    #     pr_corners = pickle.load(f)
-    # conf = corner_confidence9(np.array(gt_corners), np.array(pr_corners))
-
-    gt_corners = np.load(
-        'gt_corners.npy').reshape(9, 2, 13, 13)
-    pr_corners = np.load('pr_corners.npy').reshape(9, 2, 13, 13)
-    output = np.load('mean_conf.npy')
-    mean_conf = corner_confidences9(gt_corners, pr_corners)
-    np.testing.assert_almost_equal(mean_conf.reshape(-1), output)
+    point_loss = F.sum(
+        coord_mask[:, None, None] * (rpoints - gt_rpoints) ** 2) / (2 * B)
+    conf_loss = F.sum(conf_mask * (det_confs - gt_confs) ** 2) / (2 * B)
+    return point_loss, conf_loss

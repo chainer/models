@@ -1,3 +1,5 @@
+import argparse
+
 from darknet_torch import Darknet as TorchDarknet
 
 import chainer
@@ -6,7 +8,9 @@ import chainer.functions as F
 import chainer.links as L
 import numpy as np
 
-from ssp import SSPYOLOv2
+import sys
+sys.path.append('..')
+from lib.ssp import SSPYOLOv2
 
 
 def copy_conv_bn_activ(src, dst, copy_bn=True):
@@ -26,12 +30,21 @@ def copy_conv_bn_activ(src, dst, copy_bn=True):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--cfg', default='cfg/yolo-pose.cfg')
+    parser.add_argument('--skip-last', action='store_true')
+    parser.add_argument('--weight')
+    parser.add_argument('--output')
+    args = parser.parse_args()
     # Load torch model
-    cfgfile = 'cfg/yolo-pose.cfg'
-    weightfile = 'backup/ape/model_backup.weights'
+    cfgfile = args.cfg
+    weightfile = args.weight
     model = TorchDarknet(cfgfile)
     model.print_network()
-    model.load_weights(weightfile)
+    if args.skip_last:
+        model.load_weights_until_last(weightfile)
+    else:
+        model.load_weights(weightfile)
 
     chainer_model = SSPYOLOv2()
     d = {0: chainer_model.conv1,
@@ -61,12 +74,18 @@ if __name__ == '__main__':
         if index != 30:
             cba = model.models[index]
             copy_conv_bn_activ(cba, val)
+            if index == 0:
+                val.conv.W.data /= 255
         else:
             conv = model.models[index][0]
-            val.W.data[:] = conv.weight
-            val.b.data[:] = conv.bias
+            if conv.weight.shape == val.W.data.shape:
+                val.W.data[:] = conv.weight
+                val.b.data[:] = conv.bias
+            else:
+                print('skipping the last layer src_shape={} dst_shape={}'.format(
+                    conv.weight.shape, val.W.data.shape))
 
-    chainer.serializers.save_npz('ssp_yolo_v2.npz', chainer_model)
+    chainer.serializers.save_npz(args.output, chainer_model)
 
     # Check correctness
     # import torch

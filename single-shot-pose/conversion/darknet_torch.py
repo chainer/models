@@ -2,8 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from region_loss import RegionLoss
+# from region_loss import RegionLoss
 from cfg import *
+
 
 class MaxPoolStride1(nn.Module):
     def __init__(self):
@@ -66,11 +67,11 @@ class Darknet(nn.Module):
         self.width = int(self.blocks[0]['width'])
         self.height = int(self.blocks[0]['height'])
 
-        if self.blocks[(len(self.blocks)-1)]['type'] == 'region':
-            self.anchors = self.loss.anchors
-            self.num_anchors = self.loss.num_anchors
-            self.anchor_step = self.loss.anchor_step
-            self.num_classes = self.loss.num_classes
+        # if self.blocks[(len(self.blocks)-1)]['type'] == 'region':
+        #     self.anchors = self.loss.anchors
+        #     self.num_anchors = self.loss.num_anchors
+        #     self.anchor_step = self.loss.anchor_step
+        #     self.num_classes = self.loss.num_classes
 
         self.header = torch.IntTensor([0,0,0,0])
         self.seen = 0
@@ -225,18 +226,19 @@ class Darknet(nn.Module):
                 out_filters.append(prev_filters)
                 models.append(model)
             elif block['type'] == 'region':
-                loss = RegionLoss()
-                anchors = block['anchors'].split(',')
-                loss.anchors = [float(i) for i in anchors]
-                loss.num_classes = int(block['classes'])
-                loss.num_anchors = int(block['num'])
-                loss.anchor_step = len(loss.anchors)/loss.num_anchors
-                loss.object_scale = float(block['object_scale'])
-                loss.noobject_scale = float(block['noobject_scale'])
-                loss.class_scale = float(block['class_scale'])
-                loss.coord_scale = float(block['coord_scale'])
-                out_filters.append(prev_filters)
-                models.append(loss)
+                pass
+                # loss = RegionLoss()
+                # anchors = block['anchors'].split(',')
+                # loss.anchors = [float(i) for i in anchors]
+                # loss.num_classes = int(block['classes'])
+                # loss.num_anchors = int(block['num'])
+                # loss.anchor_step = len(loss.anchors)/loss.num_anchors
+                # loss.object_scale = float(block['object_scale'])
+                # loss.noobject_scale = float(block['noobject_scale'])
+                # loss.class_scale = float(block['class_scale'])
+                # loss.coord_scale = float(block['coord_scale'])
+                # out_filters.append(prev_filters)
+                # models.append(loss)
             else:
                 print('unknown type %s' % (block['type']))
     

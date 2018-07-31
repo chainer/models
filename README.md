@@ -19,5 +19,4 @@ We have a list of candidate papers to implement: https://github.com/chainer/mode
 - Deep contextualized word representations [[paper](http://arxiv.org/abs/1802.05365)] [[code](https://github.com/chainer/models/tree/master/elmo-chainer)]
 - Adversarial Training Methods for Semi-Supervised Text Classification [[paper](https://arxiv.org/abs/1605.07725)] [[code](https://github.com/chainer/models/tree/master/adversarial_text)]
 - Multi-label image classification [[code](https://github.com/chainer/models/tree/master/multi-label-classification)]
-
-
+- Real-Time Seamless Single Shot 6D Object Pose Prediction [[paper](https://arxiv.org/abs/1711.08848)] [[code](https://github.com/chainer/models/tree/master/single-shot-pose)]
