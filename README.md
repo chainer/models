@@ -16,6 +16,7 @@ We have a list of candidate papers to implement: https://github.com/chainer/mode
 - Mixture Density Networks [[article](http://blog.otoro.net/2015/11/24/mixture-density-networks-with-tensorflow/)] [[code](https://github.com/chainer/models/tree/master/mdn)]
 - GradNorm: Gradient Normalization for Adaptive Loss Balancing in Deep Multitask Networks [[paper](https://arxiv.org/abs/1711.02257)] [[code](https://github.com/chainer/models/tree/master/grad-norm)]
 - Improving Language Understanding by Generative Pre-Training [[article](https://blog.openai.com/language-unsupervised/)] [[code](https://github.com/chainer/models/tree/master/finetuning-transformer-lm)]
+- BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding [[paper](https://arxiv.org/abs/1810.04805)] [[code](https://github.com/chainer/models/tree/master/bert)]
 - Deep contextualized word representations [[paper](http://arxiv.org/abs/1802.05365)] [[code](https://github.com/chainer/models/tree/master/elmo-chainer)]
 - Adversarial Training Methods for Semi-Supervised Text Classification [[paper](https://arxiv.org/abs/1605.07725)] [[code](https://github.com/chainer/models/tree/master/adversarial_text)]
 - Multi-label image classification [[code](https://github.com/chainer/models/tree/master/multi-label-classification)]
