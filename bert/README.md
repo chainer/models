@@ -94,12 +94,6 @@ This code was tested on Python 3.5+. The requirements are:
 - Chainer
 - progressbar2
 
-To install the dependencies:
-
-```bash
-pip install -r ./requirements.txt
-```
-
 ## Fine-tuning with BERT: running the examples
 
 We showcase the same examples as [the original implementation](https://github.com/google-research/bert/): fine-tuning a sequence-level classifier on the MRPC classification corpus and a token-level classifier on the question answering dataset SQuAD.
@@ -141,9 +135,9 @@ Corpus (MRPC) corpus and runs in less than several minutes on a single Tesla P10
 ```shell
 python run_classifier.py \
   --task_name MRPC \
-  --do_train \
-  --do_eval \
-  --do_lower_case \
+  --do_train True \
+  --do_eval True \
+  --do_lower_case True \
   --data_dir $GLUE_DIR/MRPC/ \
   --vocab_file $BERT_BASE_DIR/vocab.txt \
   --bert_config_file $BERT_BASE_DIR/bert_config.json \
