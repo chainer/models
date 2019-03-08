@@ -4,9 +4,7 @@ import chainer
 import chainer.functions as F
 import chainer.links as L
 import numpy as np
-
-PROBC = 1 / math.sqrt(2 * math.pi)
-
+from chainer import distributions
 
 class MDN(chainer.Chain):
 
@@ -45,18 +43,17 @@ class MDN(chainer.Chain):
 
         return pi, mu, log_var
 
-    def normal_prob(self, y, mu, log_var):
-        squared_sigma = F.exp(log_var)
-        sigma = F.sqrt(squared_sigma)
-        return PROBC / sigma * F.exp(-((y - mu) ** 2) / (2 * squared_sigma))
-
     def negative_log_likelihood(self, x, y):
         pi, mu, log_var = self.get_gaussian_params(x)
 
         # Likelihood over different Gaussians
         y = F.tile(y[:, None, :], (1, self.gaussian_mixtures, 1))
         pi = F.tile(F.expand_dims(pi, 2), (1, 1, self.input_dim))
-        prob = F.sum(pi * self.normal_prob(y, mu, log_var), axis=1)
+        
+        squared_sigma = F.exp(log_var)
+        sigma = F.sqrt(squared_sigma)
+        prob = F.sum(pi * distributions.Normal(mu, sigma).prob(y), axis=1)
+        
         negative_log_likelihood = -F.log(prob)
         return F.mean(negative_log_likelihood)
 
