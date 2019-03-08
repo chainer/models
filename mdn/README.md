@@ -7,7 +7,7 @@ This repository is intended to be a draft for a repository in [chainer/models](h
 
 ## Requirements
 
-- [Chainer](https://chainer.org) v4.1.0
+- [Chainer](https://chainer.org) v5.1.0
 - [NumPy](http://www.numpy.org/) v1.14.0
 - [Matplotlib](https://matplotlib.org/) v2.1.2
 
@@ -34,3 +34,6 @@ python train.py
 ### Loss curve
 
 ![loss](images/loss.png)
+
+### Authors
+We thank [@mitmul](https://github.com/mitmul) and [@23pointsNorth](https://github.com/23pointsNorth)
