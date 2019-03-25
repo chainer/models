@@ -68,13 +68,14 @@ def sort_batch_by_length(tensor,
         raise ConfigurationError(
             "Both the tensor and sequence lengths must be torch.autograd.Variables.")
     """
-    sorted_sequence_lengths = np.sort(sequence_lengths, 0)[::-1]
+    xp = chainer.cuda.get_array_module(*tensor)
     permutation_index = np.argsort(sequence_lengths, 0)[::-1]
-    sorted_tensor = tensor[permutation_index]
+    sorted_sequence_lengths = [sequence_lengths[i] for i in permutation_index]
+    sorted_tensor = [tensor[i] for i in permutation_index]
 
     index_range = np.arange(len(sequence_lengths))
-    reverse_mapping = permutation_index[::-1]
-    restoration_indices = index_range[reverse_mapping]
+    reverse_mapping = np.argsort(permutation_index)
+    restoration_indices = [index_range[i] for i in reverse_mapping]
     return sorted_tensor, sorted_sequence_lengths, restoration_indices, permutation_index
 
 
@@ -137,26 +138,20 @@ class _EncoderBase(chainer.Chain):
         xp = self.xp
         xs = inputs
 
-        batch_lengths = [m.sum() for m in mask]
+        batch_lengths = [int(m.sum()) for m in mask]
         indices = argsort_list_descent(batch_lengths)
         indices_array = xp.asarray(indices)
 
-        xs = F.permutate(xs, indices_array, axis=0, inv=False)
-        mask = mask[indices_array]
-        if hidden_state:
-            h, c = hidden_state
-            h = F.permutate(h, indices_array, axis=1, inv=False)
-            c = F.permutate(c, indices_array, axis=1, inv=False)
-            initial_state = (h, c)
-            # TODO: test
-        else:
-            initial_state = None
+        xs, batch_lengths, restoration_indices, sorting_indices =\
+            sort_batch_by_length(inputs, batch_lengths)
+        indices_array = xp.asarray(sorting_indices)
 
-        batch_lengths = [m.sum() for m in mask]
+        mask = mask[indices_array]
+        initial_state = None
+
         module_output, final_states = module(
             xs, batch_lengths=batch_lengths, initial_state=initial_state)
 
-        restoration_indices = indices_array
         return module_output, final_states, restoration_indices
 
     def _get_initial_states(self,

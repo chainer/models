@@ -155,7 +155,8 @@ class LstmCellWithProjection(chainer.Chain):
         batch_size = inputs.shape[0]
         total_timesteps = inputs.shape[1]
 
-        output_accumulator_list = []
+        output_accumulator = self.xp.zeros(
+            (batch_size, total_timesteps, self.hidden_size), 'f')
         if initial_state is None:
             full_batch_previous_memory = chainer.Variable(
                 self.xp.zeros((batch_size, self.cell_size), 'f'))
@@ -238,7 +239,6 @@ class LstmCellWithProjection(chainer.Chain):
 
             # shape (current_length_index, cell_size)
             pre_projection_timestep_output = output_gate * F.tanh(memory)
-
             # shape (current_length_index, hidden_size)
             timestep_output = self.state_projection(
                 pre_projection_timestep_output)
@@ -259,17 +259,12 @@ class LstmCellWithProjection(chainer.Chain):
                 [memory, full_batch_previous_memory[current_length_index + 1:]], axis=0)
             full_batch_previous_state = F.concat(
                 [timestep_output, full_batch_previous_state[current_length_index + 1:]], axis=0)
-            output_accumulator_list.append(timestep_output)
+            output_accumulator[0:current_length_index + 1, index] \
+                = timestep_output.array
 
         # Mimic the pytorch API by returning state in the following shape:
         # (num_layers * num_directions, batch_size, ...). As this
         # LSTM cell cannot be stacked, the first dimension here is just 1.
         final_state = (F.expand_dims(full_batch_previous_state, 0),
                        F.expand_dims(full_batch_previous_memory, 0))
-        if not self.go_forward:
-            output_accumulator_list = output_accumulator_list[::-1]
-        output_accumulator = F.pad_sequence(output_accumulator_list)
-        output_accumulator = output_accumulator.transpose((1, 0, 2))
-        # (batch_size, total_timesteps, self.hidden_size)
-
         return output_accumulator, final_state

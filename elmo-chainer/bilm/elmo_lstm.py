@@ -162,8 +162,6 @@ class ElmoLstm(_EncoderBase):
             stacked_sequence_output = F.concat(
                 [stacked_sequence_output, zeros], 2)
 
-        self._update_states(final_states, restoration_indices)
-
         # Restore the original indices and return the sequence.
         # Has shape (num_layers, batch_size, sequence_length, hidden_size)
         # return stacked_sequence_output.index_select(1, restoration_indices)
