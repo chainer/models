@@ -46,7 +46,11 @@ The value is displayed as `Our score (Reference score)`.
 | Model | EAO | Accuracy | Robustness |
 |:-:|:-:|:-:|:-:|
 | siamrpn_r50_l234_dwxcorr | 0.388 (0.415) | 0.599 (0.601) | 0.272 (0.234) |
-| siammask_r50_l3 | XXX (0.423) | XXX (0.615) | XXX (0.248) |
+| siammask_r50_l3 | 0.390 (0.423) | 0.599 (0.615) | 0.267 (0.248) |
+
+The accuracy for SiamMask is lower than the original implementation because the evaluation measure is slightly different.
+The original implementation uses polygons predicted by SiamMask for the calculation of overlap between prediction and GT.
+The current implementation only uses the axis-aligned bounding boxes for the calculation of overlap.
 
 
 ## Test

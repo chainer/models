@@ -81,5 +81,5 @@ if __name__ == '__main__':
         'eval_sot_out.npz',
          pred_bboxes=pred_bboxes, pred_statuses=pred_statuses,
          gt_polys=video_polys, sizes=sizes)
-    result = eval_sot_vot(pred_bboxes, pred_statuses, gt_polys, sizes)
+    result = eval_sot_vot(pred_bboxes, pred_statuses, video_polys, sizes)
     print(result['eao'], result['accuracy'], result['robustness'])
