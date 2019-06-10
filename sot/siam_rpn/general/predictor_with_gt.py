@@ -42,7 +42,7 @@ class PredictorWithGT(object):
                 statuses.append(np.zeros((n,), dtype=np.int32))
             elif i > start_idx:
                 if self.mask:
-                    _, _, _, pred_poly = self.tracker.track(img)
+                    pred_bbox, _, _, pred_poly = self.tracker.track(img)
                     overlap = vot_overlap(pred_poly, gt_bbox, img.shape[1:])
                 else:
                     pred_bbox, _ = self.tracker.track(img)
