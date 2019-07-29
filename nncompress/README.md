@@ -30,7 +30,7 @@ Author's implementation: [https://github.com/zomux/neuralcompressor](https://git
 3. Train the embedding quantization model
 
 ```
-> python train.py -b 128 -gpu 0 -O Adam --M 8 --K 8 --tau 1.0 --input-matrix ./data/glove.6B.300d.npy
+> python train.py -b 128 --gpu 0 -O Adam --M 8 --K 8 --tau 1.0 --input-matrix ./data/glove.6B.300d.npy
 ```
 
 ```
