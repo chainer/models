@@ -24,6 +24,7 @@ We have a list of candidate papers to implement: https://github.com/chainer/mode
 - Neural Relational Inference for Interacting Systems [[paper](https://arxiv.org/abs/1802.04687)] [[code](https://github.com/chainer/models/tree/master/nri)]
 - SiamRPN and SiamMask [[paper](https://arxiv.org/abs/1812.05050)] [[code](https://github.com/STVIR/pysot)]
 - Learning to learn by gradient descent by gradient descent [[paper](https://arxiv.org/abs/1606.04474)] [[code](https://github.com/chainer/models/tree/master/learning_to_learn)]
+- Attention is all you need [[paper](http://papers.nips.cc/paper/7181-attention-is-all-you-need)] [[code](https://github.com/chainer/models/tree/master/transformer)]
 
 ## License
 MIT License (see `LICENSE` file).
