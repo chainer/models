@@ -5,15 +5,15 @@ from chainer.training.extensions import Evaluator
 
 class CopyTransformerEvaluationFunction:
 
-    def __init__(self, net, device):
+    def __init__(self, net, device_id):
         self.net = net
-        self.device = device
+        self.device_id = device_id
 
     def __call__(self, **kwargs):
         data = kwargs.pop('data')
         labels = kwargs.pop('label')
 
-        with cuda.Device(self.device):
+        with cuda.get_device_from_id(self.device_id):
             data = self.net.xp.array(data)
             labels = self.net.xp.array(labels)
 
