@@ -31,7 +31,7 @@ def main():
     out = args.out
     create_directory(out)
 
-    root = 'Data'
+    root = args.root
     Input = os.path.join(root, 'Input')
     Target = os.path.join(root,'Target')
     # height = width = 424
