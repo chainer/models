@@ -30,10 +30,15 @@ def save_non_embed_npz(file, obj, compression=True):
             save_non_embed_npz(f, obj, compression)
         return
 
-    s = DictionarySerializer()
-    s.save(obj)
-    s.target = {k: v for k, v in s.target.items() if 'embed_mat' not in k}
-    if compression:
-        np.savez_compressed(file, **s.target)
+    if isinstance(obj, dict):
+        target = obj
     else:
-        np.savez(file, **s.target)
+        s = DictionarySerializer()
+        s.save(obj)
+        s.target = {k: v for k, v in s.target.items() if 'embed_mat' not in k}
+        target = s.target
+
+    if compression:
+        np.savez_compressed(file, **target)
+    else:
+        np.savez(file, **target)
