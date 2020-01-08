@@ -27,7 +27,7 @@ def main(args):
     )
 
     # create our custom updater that computes the loss and updates the params of the network
-    updater = CopyTransformerUpdater(train_iter, optimizer, device=args.gpu)
+    updater = CopyTransformerUpdater(train_iter, optimizer, device=args.device)
 
     # init the trainer
     trainer = chainer.training.Trainer(updater, (args.epochs, 'epoch'), out='train')
@@ -36,8 +36,8 @@ def main(args):
     trainer.extend(chainer.training.extensions.ProgressBar(update_interval=10))
 
     # create the evaluator
-    eval_function = CopyTransformerEvaluationFunction(net, args.gpu)
-    trainer.extend(CopyTransformerEvaluator({}, net, device=args.gpu, eval_func=eval_function))
+    eval_function = CopyTransformerEvaluationFunction(net, args.device)
+    trainer.extend(CopyTransformerEvaluator({}, net, device=args.device, eval_func=eval_function))
 
     trainer.run()
 
@@ -47,7 +47,7 @@ if __name__ == "__main__":
         description="Test the transformer under a copy task",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument("-g", "--gpu", default=-1, type=int, help="gpu device to use (negative value indicates cpu)")
+    parser.add_argument("-d", "--device", default='@numpy', help="device to use (integers >= 0 indicate gpu)")
     parser.add_argument("-b", "--batch-size", default=64, type=int, help="batch size for training")
     parser.add_argument("-e", "--epochs", type=int, default=100, help="number of epochs to train")
     parser.add_argument("-v", "--vocab-size", type=int, default=101, help="number of different digits that we train the copy on")

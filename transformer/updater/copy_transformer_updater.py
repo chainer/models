@@ -1,16 +1,13 @@
 import chainer
 import chainer.functions as F
 
-from chainer.backends import cuda
-from chainer.backends.cuda import GpuDevice
 from chainer.training import StandardUpdater
 
 
 class CopyTransformerUpdater(StandardUpdater):
 
     def update_core(self):
-        device_id = self.device.device.id if isinstance(self.device, GpuDevice) else -1
-        with cuda.get_device_from_id(device_id):
+        with chainer.using_device(self.device):
             self.update_net()
 
     def update_net(self):

@@ -1,19 +1,19 @@
+import chainer
 from chainer import reporter
-from chainer.backends import cuda
 from chainer.training.extensions import Evaluator
 
 
 class CopyTransformerEvaluationFunction:
 
-    def __init__(self, net, device_id):
+    def __init__(self, net, device):
         self.net = net
-        self.device_id = device_id
+        self.device = device
 
     def __call__(self, **kwargs):
         data = kwargs.pop('data')
         labels = kwargs.pop('label')
 
-        with cuda.get_device_from_id(self.device_id):
+        with chainer.using_device(self.device):
             data = self.net.xp.array(data)
             labels = self.net.xp.array(labels)
 
