@@ -21,7 +21,7 @@ If you want to try the example, you'll need to do the following:
 . Python 2 might also work, but this is not guaranteed.
 1. install all requirements via `pip install -r requirements.txt`
 1. start the training with `python train_copy.py`. If you want to use
-a GPU for training, you can specify the GPU with `-g`. For further options
+a GPU for training, you can specify the GPU with `-d`. For further options
 type `python train_copy.py -h`.
 1. wait some minutes and you should get a transformer that can copy digits.
 
